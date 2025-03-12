@@ -1,0 +1,47 @@
+---
+- name: Deploy Services
+  hosts: all  # This will target all hosts in your inventory
+  become: true  # Use sudo privileges
+  vars:
+    container_name: "{{ service_name }}"
+    image_name: "{{ dockerhub_username }}/{{ service_name }}:{{ docker_tag }}"
+    container_ports:
+      service1: "5000:5000"
+      service2: "5001:5001"
+
+  tasks:
+    - name: Log into DockerHub
+      docker_login:
+        username: "{{ dockerhub_username }}"
+        password: "{{ dockerhub_password }}"
+      no_log: true  # Hide sensitive output
+
+    - name: Pull Docker image
+      docker_image:
+        name: "{{ image_name }}"
+        source: pull
+        force_source: yes
+
+    - name: Stop existing container if running
+      docker_container:
+        name: "{{ container_name }}"
+        state: absent
+
+    - name: Run Docker container
+      docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ container_ports[service_name] }}"
+        
+    - name: Verify container is running
+      docker_container_info:
+        name: "{{ container_name }}"
+      register: result
+
+    - name: Check container status
+      fail:
+        msg: "Container {{ container_name }} is not running!"
+      when: not result.exists or result.container.State.Running != true
