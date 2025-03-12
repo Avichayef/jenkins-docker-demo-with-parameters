@@ -27,6 +27,7 @@
       docker_container:
         name: "{{ container_name }}"
         state: absent
+        container_default_behavior: compatibility
 
     - name: Run Docker container
       docker_container:
@@ -34,6 +35,7 @@
         image: "{{ image_name }}"
         state: started
         restart_policy: always
+        container_default_behavior: compatibility
         ports:
           - "{{ container_ports[service_name] }}"
 
