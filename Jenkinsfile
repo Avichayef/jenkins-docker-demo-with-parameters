@@ -21,7 +21,7 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        ANSIBLE_SUDO_PASS = credentials('ansible_sudo_pass')  // Changed from 'ansible-sudo-password'
+        ANSIBLE_SUDO_PASS = credentials('ansible_sudo_pass')
         SERVICE_PATH = "./docker/${params.SERVICE_NAME}"
     }
 
@@ -35,6 +35,7 @@ pipeline {
                         -e "service_name=${params.SERVICE_NAME}" \
                         -e "docker_tag=${params.DOCKER_TAG}" \
                         -e "dockerhub_username=${params.DOCKERHUB_USERNAME}" \
+                        -e "dockerhub_password=${DOCKERHUB_CREDENTIALS_PSW}" \
                         -e "ansible_become_password=${ANSIBLE_SUDO_PASS}"
                     """
                 }
