@@ -35,9 +35,10 @@
         image: "{{ image_name }}"
         state: started
         restart_policy: always
-        container_default_behavior: compatibility
-        ports:
+        published_ports:  # More explicit port publishing
           - "{{ container_ports[service_name] }}"
+        networks:
+          - name: bridge
 
     - name: Verify container is running
       docker_container_info:
