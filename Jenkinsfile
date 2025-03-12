@@ -28,28 +28,22 @@ pipeline {
     stages {
         stage('Deploy with Ansible') {
             steps {
-                script {
-                    wrap([$class: 'MaskPasswordsBuildWrapper']) {
-                        sh '''
-                            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ansible/deploy-playbook.yml \
-                            -i ansible/inventory.ini \
-                            -e "service_name=${SERVICE_NAME}" \
-                            -e "docker_tag=${DOCKER_TAG}" \
-                            -e "dockerhub_username=${DOCKERHUB_USERNAME}" \
-                            -e "dockerhub_password=${DOCKERHUB_CREDENTIALS_PSW}" \
-                            -e "ansible_become_password=${ANSIBLE_SUDO_PASS}"
-                        '''
-                    }
-                }
+                sh '''
+                    ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ansible/deploy-playbook.yml \
+                    -i ansible/inventory.ini \
+                    -e "service_name=${SERVICE_NAME}" \
+                    -e "docker_tag=${DOCKER_TAG}" \
+                    -e "dockerhub_username=${DOCKERHUB_USERNAME}" \
+                    -e "dockerhub_password=${DOCKERHUB_CREDENTIALS_PSW}" \
+                    -e "ansible_become_password=${ANSIBLE_SUDO_PASS}"
+                '''
             }
         }
     }
 
     post {
         always {
-            node('any') {
-                sh 'docker logout'
-            }
+            sh 'docker logout'
         }
     }
 }
