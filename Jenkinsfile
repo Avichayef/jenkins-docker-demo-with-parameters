@@ -21,13 +21,11 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        ANSIBLE_SUDO_PASS = credentials('ansible-sudo-password')
+        ANSIBLE_SUDO_PASS = credentials('ansible_sudo_pass')  // Changed from 'ansible-sudo-password'
         SERVICE_PATH = "./docker/${params.SERVICE_NAME}"
     }
 
     stages {
-        // Previous stages remain the same...
-
         stage('Deploy with Ansible') {
             steps {
                 script {
@@ -46,7 +44,9 @@ pipeline {
 
     post {
         always {
-            sh 'docker logout'
+            node('any') {
+                sh 'docker logout'
+            }
         }
     }
 }
