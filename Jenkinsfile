@@ -22,7 +22,7 @@ pipeline {
 
     environment {
         // Define environment variables
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
         SERVICE_PATH = "./docker/${params.SERVICE_NAME}"
     }
 
