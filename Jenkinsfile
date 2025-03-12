@@ -65,6 +65,7 @@ pipeline {
                     // Run Ansible playbook
                     sh """
                         ansible-playbook ansible/deploy-playbook.yml \
+                        -i ansible/inventory.ini \
                         -e "service_name=${params.SERVICE_NAME}" \
                         -e "docker_tag=${params.DOCKER_TAG}" \
                         -e "dockerhub_username=${params.DOCKERHUB_USERNAME}"
